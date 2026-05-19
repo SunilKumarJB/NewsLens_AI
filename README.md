@@ -34,7 +34,7 @@ graph TD
    - A high-CTR search engine **meta description**.
    - An optimized **Primary Keyword** and relevant **Secondary Keywords**.
    - Category classifications (**Tags**).
-4. **Embedding Generation**: The AI summary text is translated into a 768-dimensional coordinate vector utilizing the `gemini-embedding-2` model.
+4. **Embedding Generation**: The AI summary text is translated into a 3072-dimensional coordinate vector utilizing the `gemini-embedding-2` model.
 5. **Hybrid Storage & Real-Time Sync**: Article records, metadata, and float embeddings are stored locally in a SQLite database (`articles.db`), and optionally synchronized to a Google BigQuery cloud table. The frontend UI silently polls and synchronizes with the active database in the background to keep the dashboard feed live and up-to-date.
 6. **Semantic Concept Search**: Users type search queries (in Hindi or English). The query is embedded, and a fast Python-based cosine similarity check is performed locally across all stored articles to instantly return the best conceptual matches, complete with match percentage indicators.
 7. **AI Layout Architect (Synthesis & Typography)**: Users switch to the Layout Architect view, select a target reader persona (e.g., Millennial Digest, Traditional Daily, Financial Chronicle, Sensational Tabloid) and a checklist of processed articles. Gemini 3.1 Pro acts as an Executive Chief Editor and Master Typographer to dynamically synthesize, format, and copyfit the selected stories into a responsive, standalone high-fidelity HTML newspaper broadsheet layout ready for print or export.
