@@ -1,0 +1,24 @@
+# Ignore Python virtual environment and cache resources
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local development database
+articles.db
+
+# Ignore local environment configuration
+.env
+.env.*
+
+# Ignore git resources
+.git/
+.gitignore
+
+# Ignore miscellaneous documentation and notebooks
+Article_extraction.ipynb
+README.md
+task.md
+walkthrough.md
+implementation_plan.md

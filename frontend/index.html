@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsLens AI - Newspaper Extraction & Search Portal</title>
+    <!-- Import Premium English & Devanagari Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Martel:wght@300;400;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Main App Container -->
+    <div class="app-container">
+
+        <!-- Glowing Backdrop Elements -->
+        <div class="bg-glow bg-glow-1"></div>
+        <div class="bg-glow bg-glow-2"></div>
+
+        <!-- Header Block -->
+        <header class="app-header">
+            <div class="brand">
+                <span class="badge-live">LIVE</span>
+                <h1>NewsLens <span class="gradient-text">AI</span></h1>
+                <p>Devanagari Article Extraction & Semantic Intelligence Portal</p>
+            </div>
+            <div class="header-stats">
+                <div class="stat-card">
+                    <span class="stat-value" id="total-articles-count">0</span>
+                    <span class="stat-label">Total Articles</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Global Tab Navigation Bar -->
+        <nav class="app-nav">
+            <button class="nav-tab-btn active" id="nav-tab-dashboard">Dashboard Feed</button>
+            <button class="nav-tab-btn" id="nav-tab-architect">Layout Architect</button>
+        </nav>
+
+        <!-- Content Section: Dashboard View -->
+        <main class="app-main" id="dashboard-view">
+
+            <!-- Left Panel: Upload & Control Panel -->
+            <section class="control-panel">
+                <div class="glass-panel card-upload">
+                    <h2>Upload Newspaper PDF</h2>
+                    <p class="subtitle">Upload local file or enter GCS bucket path to trigger AI column extraction</p>
+
+                    <!-- Ingestion Type Tabs -->
+                    <div class="ingest-tabs">
+                        <button class="tab-btn active" id="tab-local">Local Upload</button>
+                        <button class="tab-btn" id="tab-gcs">GCS Bucket</button>
+                    </div>
+
+                    <!-- Upload Drag-and-Drop Zone -->
+                    <div class="upload-zone" id="upload-drag-zone">
+                        <input type="file" id="file-input" accept="application/pdf" class="file-input-hidden">
+                        <div class="upload-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                            </svg>
+                        </div>
+                        <h3>Drag and drop Hindi newspaper PDF here</h3>
+                        <p>or click to browse files (Max 50MB)</p>
+                    </div>
+
+                    <!-- GCS URI Ingestion Zone -->
+                    <div class="gcs-zone hidden" id="gcs-input-container">
+                        <div class="gcs-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
+                            </svg>
+                        </div>
+                        <h3>Enter GCS Bucket Path</h3>
+                        <div class="gcs-input-wrapper">
+                            <input type="text" id="gcs-path-input" placeholder="gs://sjangbahadur_veo/DB/newspaper.pdf"
+                                autocomplete="off">
+                            <button class="btn-process" id="btn-submit-gcs" style="margin-top: 12px;">Analyze GCS
+                                Path</button>
+                        </div>
+                    </div>
+
+                    <!-- Selected File Info -->
+                    <div class="file-info-box hidden" id="file-info-container">
+                        <div class="file-icon-pdf">PDF</div>
+                        <div class="file-details">
+                            <h4 id="selected-file-name">newspaper_page.pdf</h4>
+                            <p id="selected-file-size">0.0 MB</p>
+                        </div>
+                        <button class="btn-process" id="btn-submit-process">Start AI Analysis</button>
+                    </div>
+
+                    <!-- Pipeline Progress Tracker -->
+                    <div class="pipeline-progress hidden" id="pipeline-progress-container">
+                        <h3>AI Processing Pipeline</h3>
+                        <div class="progress-bar-wrapper">
+                            <div class="progress-bar-fill" id="progress-indicator-bar"></div>
+                        </div>
+
+                        <!-- Step List -->
+                        <div class="pipeline-steps">
+                            <div class="step-item" id="step-extract">
+                                <div class="step-dot"></div>
+                                <div class="step-info">
+                                    <h4>1. Document Text Extraction</h4>
+                                    <p>Gemini 3.1 Pro isolating news columns...</p>
+                                </div>
+                            </div>
+                            <div class="step-item" id="step-metadata">
+                                <div class="step-dot"></div>
+                                <div class="step-info">
+                                    <h4>2. SEO Metadata Generation</h4>
+                                    <p>Structuring summaries, tags and keyphrases...</p>
+                                </div>
+                            </div>
+                            <div class="step-item" id="step-embeddings">
+                                <div class="step-dot"></div>
+                                <div class="step-info">
+                                    <h4>3. Vector Embeddings Generation</h4>
+                                    <p>Creating coordinates for semantic similarity...</p>
+                                </div>
+                            </div>
+                            <div class="step-item" id="step-save">
+                                <div class="step-dot"></div>
+                                <div class="step-info">
+                                    <h4>4. SQLite & BigQuery Database Sync</h4>
+                                    <p>Writing locally & sinking to BigQuery...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Dashboard Feed & Search -->
+            <section class="feed-panel">
+
+                <!-- Search Container -->
+                <div class="search-container glass-panel">
+                    <form id="search-form" onsubmit="event.preventDefault();">
+                        <div class="search-bar-wrapper">
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="M21 21l-4.35-4.35" />
+                            </svg>
+                            <input type="text" id="search-input"
+                                placeholder="Search wedding trends, politics, local city news, sports..."
+                                autocomplete="off">
+                            <button type="submit" class="btn-search" id="btn-search-execute">Search (Vector
+                                Search)</button>
+                        </div>
+                    </form>
+                    <div class="search-helper-text">
+                        Semantic search reads conceptual meanings in English & Hindi.
+                    </div>
+                </div>
+
+                <!-- Search Active Bar -->
+                <div class="search-results-info hidden" id="search-results-info-bar">
+                    <p id="search-results-count-text">Searching...</p>
+                    <button class="btn-clear-search" id="btn-clear-search">Clear Search</button>
+                </div>
+
+                <!-- Grid View of Articles -->
+                <div class="articles-grid" id="articles-feed-grid">
+                    <!-- Dynamic Cards will be rendered here -->
+                    <div class="shimmer-card"></div>
+                    <div class="shimmer-card"></div>
+                    <div class="shimmer-card"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Layout Architect View Panel -->
+        <main class="app-main hidden" id="architect-view">
+            <!-- Left Panel: Selector Forms -->
+            <section class="control-panel">
+                <!-- Persona Selector -->
+                <div class="glass-panel">
+                    <h2
+                        style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 600; margin-bottom: 6px;">
+                        1. Target Persona</h2>
+                    <p class="subtitle">Select reader style or news agency persona</p>
+
+                    <div class="persona-grid">
+                        <label class="persona-card active">
+                            <input type="radio" name="persona-select"
+                                value="The Millennial Digest: Modern geometric sans-serif, short brief bulleted dynamic capsules, conversational light tone, bold titles, touch of emojis, lifestyle-focused."
+                                checked class="persona-input-hidden">
+                            <div class="persona-icon">🦄</div>
+                            <h4>Millennial Digest</h4>
+                            <p>Brief, punchy, lifestyle-focused with bold geometric highlights.</p>
+                        </label>
+                        <label class="persona-card">
+                            <input type="radio" name="persona-select"
+                                value="The Traditional Daily: Traditional Hindi daily newspaper, high formal vocabulary register, classic Martel serif typography, multi-column columns, vertical borders, classic design."
+                                class="persona-input-hidden">
+                            <div class="persona-icon">🏛️</div>
+                            <h4>Traditional Daily</h4>
+                            <p>Formal Hindi registry, multi-column layouts, classic dividers.</p>
+                        </label>
+                        <label class="persona-card">
+                            <input type="radio" name="persona-select"
+                                value="The Financial Chronicle: Precise analytical tone, economy-centric business headlines, key numbers highlighted in tables or bold grids, tabular takeaways."
+                                class="persona-input-hidden">
+                            <div class="persona-icon">📊</div>
+                            <h4>Financial Chronicle</h4>
+                            <p>Precise business metrics, analytical data tables, clean layouts.</p>
+                        </label>
+                        <label class="persona-card">
+                            <input type="radio" name="persona-select"
+                                value="The Sensational Tabloid: Emotion-sparking high impact dramatic headlines, large featured quotes, high pacing, single large columns, maximum curiosity style."
+                                class="persona-input-hidden">
+                            <div class="persona-icon">⚡</div>
+                            <h4>Sensational Tabloid</h4>
+                            <p>Dramatic emotional titles, large featured quotes, highly pacing format.</p>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Article Checklist Selector -->
+                <div class="glass-panel card-upload" style="margin-top: 1.5rem;">
+                    <h2>2. Select News Articles</h2>
+                    <p class="subtitle">Choose stories to structure on the editorial sheet</p>
+
+                    <div class="checklist-container" id="architect-checklist-container">
+                        <!-- Checkboxes populated dynamically from SQLite -->
+                        <div class="shimmer-card" style="height: 80px; margin-bottom: 8px;"></div>
+                        <div class="shimmer-card" style="height: 80px;"></div>
+                    </div>
+
+                    <button class="btn-process" id="btn-generate-editorial" style="margin-top: 1.5rem;">Generate
+                        Editorial Page</button>
+                </div>
+            </section>
+
+            <!-- Right Panel: Iframe Page Canvas -->
+
+            <div style="display: flex; flex-direction: column; height: 100%;">
+                <div class="canvas-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                    <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 600;">Editorial Page
+                        Sheet Viewport</h2>
+                    <div class="canvas-actions">
+                        <button class="btn-clear-search" id="btn-download-html">Export HTML</button>
+                        <button class="btn-clear-search" id="btn-print-layout" style="margin-left: 8px;">Print
+                            Page</button>
+                    </div>
+                </div>
+
+                <!-- The Iframe viewport where generated sheet renders -->
+                <div class="iframe-wrapper">
+                    <iframe id="architect-canvas"
+                        srcdoc="<div style='color:#6b7280; text-align:center; padding: 6rem; font-family: sans-serif;'><h3>No Layout Generated Yet</h3><p style='margin-top: 8px;'>Choose target persona, check news stories, and click Generate above.</p></div>"></iframe>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Transparent Glass Overlay Modal (Article Detail View) -->
+        <div class="modal-overlay hidden" id="article-detail-modal">
+            <div class="modal-card glass-panel">
+
+                <!-- Close button -->
+                <button class="modal-close-btn" id="modal-close-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Modal Body Container -->
+                <div class="modal-content-container">
+
+                    <div class="modal-left">
+                        <!-- Headline Info -->
+                        <div class="modal-header-info">
+                            <div class="modal-meta-tags">
+                                <span class="page-badge" id="modal-page-num">Page 4</span>
+                                <span class="author-badge" id="modal-author" lang="hi">Reporter</span>
+                            </div>
+                            <h1 id="modal-headline" lang="hi">Loading article headline...</h1>
+                            <h3 id="modal-subheadline" lang="hi">Subheadline</h3>
+                        </div>
+
+                        <!-- Main Hindi Body text -->
+                        <div class="modal-article-body">
+                            <h4 class="section-heading">Article Full Text</h4>
+                            <div id="modal-body-text" class="body-text-content" lang="hi">
+                                Full news story will appear here...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-right">
+                        <!-- AI Insights Accordion/Grid -->
+                        <div class="ai-insights-container">
+                            <h3 class="insights-title">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor" stroke-width="2"
+                                    style="width: 20px; height: 20px; color: var(--accent-violet);">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9.813 15.904L9 21l8.982-11.795M21 3c-4.612 0-8.374 3.204-8.982 7.41M21 3a8.978 8.978 0 00-4.228 1.958L12 7.41M21 3a8.978 8.978 0 01-1.422 4.042M12 7.41L11 8M12 7.41a8.978 8.978 0 01-3.969 3.592L8.5 11.5" />
+                                </svg>
+                                AI-Enhanced Insights
+                            </h3>
+
+                            <!-- Description -->
+                            <div class="insight-block" id="modal-meta-desc-block">
+                                <h5>SEO Meta Description</h5>
+                                <p id="modal-meta-desc" lang="hi">Loading SEO meta description...</p>
+                            </div>
+
+                            <!-- Summary -->
+                            <div class="insight-block" id="modal-summary-block">
+                                <h5>AI News Summary</h5>
+                                <p id="modal-summary" lang="hi">Loading AI summary...</p>
+                            </div>
+
+                            <!-- Primary Keyword -->
+                            <div class="insight-block-split" id="modal-primary-keyword-block">
+                                <div>
+                                    <h5>Primary Keyword</h5>
+                                    <span class="keyword-pill primary" id="modal-primary-keyword"
+                                        lang="hi">Loading...</span>
+                                </div>
+                            </div>
+
+                            <!-- Secondary Keywords -->
+                            <div class="insight-block" id="modal-secondary-keywords-block">
+                                <h5>Secondary Keywords</h5>
+                                <div class="keywords-container" id="modal-secondary-keywords">
+                                    <!-- Capsule pills -->
+                                </div>
+                            </div>
+
+                            <!-- Tags -->
+                            <div class="insight-block" id="modal-tags-block">
+                                <h5>Categories & Tags</h5>
+                                <div class="keywords-container" id="modal-tags">
+                                    <!-- Category tags -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Script -->
+    <script src="app.js"></script>
+</body>
+
+</html>
