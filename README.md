@@ -1,6 +1,8 @@
 # NewsLens AI
 ### Devanagari Article Extraction & Semantic Intelligence Portal
 
+> **Disclaimer**: This is a sample project for demonstration purposes and is **not** an official Google product.
+
 **NewsLens AI** is a premium, responsive web application and backend service that transforms standard Devanagari (Hindi) daily newspaper PDFs into highly structured articles, enriches them with AI-generated SEO metadata (summaries, keywords, and categories), and enables concept-based semantic search.
 
 It is built on top of the workflow illustrated in [Article_extraction.ipynb](file:///usr/local/google/home/sjangbahadur/news_paper_demo/Article_extraction.ipynb), leveraging **Gemini 3.1 Pro** for structured extraction and **Gemini Embedding 2** for vector representation.
